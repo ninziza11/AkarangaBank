@@ -1,0 +1,200 @@
+@model System.Collections.Generic.List<AkarangaBank.Web.Models.Ecriture>
+
+@{
+    ViewData["Title"] = "Grand livre";
+
+    decimal totalDebit = 0;
+    decimal totalCredit = 0;
+    int nombreSensInconnus = 0;
+
+    foreach (var ecriture in Model)
+    {
+        if (ecriture.Sens == "Debit")
+        {
+            totalDebit += ecriture.Montant;
+        }
+        else if (ecriture.Sens == "Credit")
+        {
+            totalCredit += ecriture.Montant;
+        }
+        else
+        {
+            nombreSensInconnus++;
+        }
+    }
+
+    var ecart = totalDebit - totalCredit;
+}
+
+<div class="container-fluid mt-4">
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="mb-1">Grand livre</h1>
+            <p class="text-muted">
+                Écritures enregistrées dans la base de données.
+            </p>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2">
+            <a href="@Url.Action("Journal", "Audit")"
+               class="btn btn-outline-secondary">
+                Piste d’audit
+            </a>
+
+            <a href="@Url.Action("VerificationPartieDouble", "Audit")"
+               class="btn btn-outline-primary">
+                Vérifier la partie double
+            </a>
+
+            <a href="@Url.Action("GrandLivre", "Audit")"
+               class="btn btn-primary">
+                Actualiser
+            </a>
+        </div>
+    </div>
+
+    @if (Model.Count == 0)
+    {
+        <div class="alert alert-info" role="status">
+            Aucune écriture n’a été retournée par la base.
+            Aucun équilibre comptable ne peut être confirmé
+            à partir d’une liste vide.
+        </div>
+    }
+    else
+    {
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h2 class="h6">Total débits</h2>
+                        <p class="h4 mb-0">
+                            @totalDebit.ToString("N2")
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h2 class="h6">Total crédits</h2>
+                        <p class="h4 mb-0">
+                            @totalCredit.ToString("N2")
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h2 class="h6">Écart débits − crédits</h2>
+                        <p class="h4 mb-0">
+                            @ecart.ToString("N2")
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-secondary">
+            Ces totaux additionnent les montants retournés sans ventilation
+            par devise. Ne les interprète comme un contrôle comptable
+            que si les écritures sont exprimées dans une même devise
+            ou dans une unité comptable commune.
+        </div>
+
+        @if (nombreSensInconnus > 0)
+        {
+            <div class="alert alert-danger" role="alert">
+                @nombreSensInconnus écriture(s) possèdent un sens
+                différent de « Debit » ou « Credit ».
+                Elles ne sont pas incluses dans les totaux ci-dessus.
+            </div>
+        }
+
+        <div class="card shadow-sm">
+            <div class="card-header">
+                Liste des écritures — @Model.Count ligne(s)
+            </div>
+
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th scope="col">Date</th>
+                                <th scope="col">ID opération</th>
+                                <th scope="col">Compte</th>
+                                <th scope="col">Sens</th>
+                                <th scope="col" class="text-end">Débit</th>
+                                <th scope="col" class="text-end">Crédit</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var ecriture in Model)
+                            {
+                                var sensValide =
+                                    ecriture.Sens == "Debit"
+                                    || ecriture.Sens == "Credit";
+
+                                <tr class="@(sensValide ? "" : "table-warning")">
+                                    <td>
+                                        @ecriture.DateEcriture.ToString("dd/MM/yyyy HH:mm:ss")
+                                    </td>
+
+                                    <td>@ecriture.OperationId</td>
+
+                                    <td>
+                                        @(ecriture.Compte?.NumeroCompte
+                                            ?? "Compte indisponible")
+                                    </td>
+
+                                    <td>@ecriture.Sens</td>
+
+                                    <td class="text-end">
+                                        @if (ecriture.Sens == "Debit")
+                                        {
+                                            @ecriture.Montant.ToString("N2")
+                                        }
+                                        else
+                                        {
+                                            <span>—</span>
+                                        }
+                                    </td>
+
+                                    <td class="text-end">
+                                        @if (ecriture.Sens == "Credit")
+                                        {
+                                            @ecriture.Montant.ToString("N2")
+                                        }
+                                        else
+                                        {
+                                            <span>—</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+
+                        <tfoot>
+                            <tr>
+                                <th colspan="4">Totaux affichés</th>
+                                <th class="text-end">
+                                    @totalDebit.ToString("N2")
+                                </th>
+                                <th class="text-end">
+                                    @totalCredit.ToString("N2")
+                                </th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+
+</div>

@@ -1,0 +1,52 @@
+@model AkarangaBank.Web.Models.Compte
+
+@{
+    ViewData["Title"] = "Clôturer le compte";
+}
+
+<div class="container mt-4">
+    <div class="card border-danger shadow-sm mx-auto" style="max-width: 600px;">
+        <div class="card-header bg-danger text-white">
+            <h4 class="mb-0"><i class="bi bi-exclamation-triangle-fill"></i> Confirmation de clôture</h4>
+        </div>
+        <div class="card-body">
+            <h5 class="text-danger mb-4">Êtes-vous sûr de vouloir fermer définitivement ce compte bancaire ?</h5>
+            
+            <div class="bg-light p-3 rounded mb-4">
+                <div class="row mb-2">
+                    <div class="col-sm-5 font-weight-bold">Numéro de Compte :</div>
+                    <div class="col-sm-7"><span class="badge bg-secondary">@Model.NumeroCompte</span></div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-5 font-weight-bold">Solde Actuel :</div>
+                    <div class="col-sm-7 font-weight-bold @(Model.Solde > 0 ? "text-danger" : "text-success")">
+                        @Model.Solde.ToString("N2") @Model.Devise
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-5 font-weight-bold">Statut actuel :</div>
+                    <div class="col-sm-7"><span class="badge bg-info">@Model.Statut</span></div>
+                </div>
+            </div>
+
+            @if (Model.Solde > 0)
+            {
+                <div class="alert alert-warning text-center small">
+                    <i class="bi bi-info-circle-fill"></i> Un compte avec un solde créditeur ne peut pas être supprimé avant d'avoir retiré les fonds.
+                </div>
+            }
+
+            <form asp-action="Delete" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="Id" />
+                
+                <div class="d-flex justify-content-between mt-3">
+                    <a asp-action="Index" class="btn btn-outline-secondary">Annuler</a>
+                    <button type="submit" class="btn btn-danger" @(Model.Solde > 0 ? "disabled" : "")>
+                        <i class="bi bi-trash-fill"></i> Confirmer la clôture
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

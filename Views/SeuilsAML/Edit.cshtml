@@ -1,0 +1,105 @@
+@model AkarangaBank.Web.Models.SeuilAML
+
+@{
+    ViewData["Title"] = "Modifier un seuil AML";
+
+    var montantAffiche = Model.Montant.ToString(
+        "0.############################",
+        System.Globalization.CultureInfo.InvariantCulture);
+
+    if (ViewData.ModelState.TryGetValue("montant", out var entree)
+        && entree?.AttemptedValue is string valeurSaisie)
+    {
+        montantAffiche = valeurSaisie;
+    }
+}
+
+<h1>Modifier un seuil AML</h1>
+
+<div class="card">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Identifiant</dt>
+            <dd class="col-sm-9">@Model.Id</dd>
+
+            <dt class="col-sm-3">Code</dt>
+            <dd class="col-sm-9">@Model.Code</dd>
+
+            <dt class="col-sm-3">Libellé</dt>
+            <dd class="col-sm-9">@Model.Libelle</dd>
+
+            <dt class="col-sm-3">Type d’opération</dt>
+            <dd class="col-sm-9">@Model.TypeOperation</dd>
+
+            <dt class="col-sm-3">Devise</dt>
+            <dd class="col-sm-9">@Model.Devise</dd>
+
+            <dt class="col-sm-3">Actif</dt>
+            <dd class="col-sm-9">@(Model.Actif ? "Oui" : "Non")</dd>
+
+            <dt class="col-sm-3">Montant enregistré</dt>
+            <dd class="col-sm-9">
+                @Model.Montant.ToString("N2") @Model.Devise
+            </dd>
+        </dl>
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger" role="alert">
+                <ul class="mb-0">
+                    @foreach (var etat in ViewData.ModelState.Values)
+                    {
+                        @foreach (var erreur in etat.Errors)
+                        {
+                            <li>
+                                @(string.IsNullOrWhiteSpace(erreur.ErrorMessage)
+                                    ? "Le montant saisi est invalide."
+                                    : erreur.ErrorMessage)
+                            </li>
+                        }
+                    }
+                </ul>
+            </div>
+        }
+
+        <form method="post"
+              action="@Url.Action("Edit", "SeuilsAML", new { id = Model.Id })">
+
+            @Html.AntiForgeryToken()
+
+            <div class="mb-3">
+                <label for="montant" class="form-label">
+                    Nouveau montant (@Model.Devise)
+                </label>
+
+                <input type="number"
+                       id="montant"
+                       name="montant"
+                       class="form-control"
+                       value="@montantAffiche"
+                       min="0.01"
+                       step="0.01"
+                       required />
+
+                <div class="form-text">
+                    Pour le test 7, saisis 3000000 sans espaces.
+                </div>
+            </div>
+
+            <p class="text-muted">
+                L’enregistrement de la modification crée une trace
+                d’audit avec l’ancien montant, le nouveau montant
+                et l’identifiant de l’utilisateur connecté.
+            </p>
+
+            <button type="submit" class="btn btn-success">
+                Enregistrer
+            </button>
+
+            <a class="btn btn-secondary"
+               href="@Url.Action("Index", "SeuilsAML")">
+                Annuler
+            </a>
+        </form>
+    </div>
+</div>

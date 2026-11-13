@@ -1,0 +1,40 @@
+@model AkarangaBank.Web.ViewModels.DepotViewModel
+@{
+    ViewData["Title"] = "Dépôt";
+}
+
+<h1>Dépôt</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Depot" method="post">
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="CompteId" class="form-label"></label>
+                <select asp-for="CompteId"
+                        asp-items="ViewBag.Comptes"
+                        class="form-select">
+                    <option value="">-- Sélectionner un compte --</option>
+                </select>
+                <span asp-validation-for="CompteId" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Montant" class="form-label"></label>
+                <input asp-for="Montant" class="form-control" />
+                <span asp-validation-for="Montant" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Commentaire" class="form-label"></label>
+                <textarea asp-for="Commentaire" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Commentaire" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                Enregistrer le dépôt
+            </button>
+        </form>
+    </div>
+</div>

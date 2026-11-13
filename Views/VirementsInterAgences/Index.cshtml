@@ -1,0 +1,223 @@
+@model IEnumerable<AkarangaBank.Web.Models.VirementInterAgence>
+
+@{
+    ViewData["Title"] = "Virements inter-agences en attente";
+}
+
+<div class="container py-4">
+
+    <div class="d-flex flex-wrap justify-content-between
+                align-items-center gap-3 mb-4">
+
+        <div>
+            <h1 class="h3 mb-2">
+                Virements inter-agences en attente
+            </h1>
+
+            <p class="text-muted mb-0">
+                Virements entrants et sortants de votre agence,
+                en attente de traitement.
+            </p>
+        </div>
+
+        @if (User.IsInRole("guichetier"))
+        {
+            <a href="@Url.Action("Initier", "VirementsInterAgences")"
+               class="btn btn-primary">
+                + Nouveau virement inter-agences
+            </a>
+        }
+    </div>
+
+    @if (TempData["Success"] is string messageSucces)
+    {
+        <div class="alert alert-success" role="status">
+            @messageSucces
+        </div>
+    }
+
+    @if (TempData["Error"] is string messageErreur)
+    {
+        <div class="alert alert-danger" role="alert">
+            @messageErreur
+        </div>
+    }
+
+    @if (Model is null)
+    {
+        <div class="alert alert-warning" role="alert">
+            La liste des virements n’a pas été transmise à la page.
+            Vérifiez l’action Index du contrôleur.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle">
+
+                <caption>
+                    Virements inter-agences en attente pour votre agence.
+                </caption>
+
+                <thead>
+                    <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">Référence</th>
+                        <th scope="col">Agence source</th>
+                        <th scope="col">Agence destination</th>
+                        <th scope="col" class="text-end">
+                            Montant
+                        </th>
+                        <th scope="col">Statut</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @{
+                        var contientVirements = false;
+                    }
+
+                    @foreach (var virement in Model)
+                    {
+                        contientVirements = true;
+
+                        <tr>
+                            <td>
+                                @virement.DateCreation.ToString(
+                                    "dd/MM/yyyy HH:mm")
+                            </td>
+
+                            <td>
+                                @virement.Reference
+                            </td>
+
+                            <td>
+                                @(virement.AgenceSource?.Code
+                                    ?? "Agence non chargée")
+                            </td>
+
+                            <td>
+                                @(virement.AgenceDestination?.Code
+                                    ?? "Agence non chargée")
+                            </td>
+
+                            <td class="text-end">
+                                @virement.Montant.ToString("N2")
+                                @virement.Devise
+                            </td>
+
+                            <td>
+                                @if (virement.Statut == "EnAttente")
+                                {
+                                    <span class="badge bg-warning text-dark">
+                                        En attente
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">
+                                        @virement.Statut
+                                    </span>
+                                }
+                            </td>
+
+                            <td>
+                                @if (User.IsInRole("admin") &&
+                                     virement.Statut == "EnAttente")
+                                {
+                                    <div class="d-flex flex-column gap-2">
+
+                                        <!-- Validation du virement -->
+                                        <form action="@Url.Action(
+                                                          "Valider",
+                                                          "VirementsInterAgences")"
+                                              method="post"
+                                              onsubmit="return confirm(
+                                                  'Confirmer la validation de ce virement ?');">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <input type="hidden"
+                                                   name="id"
+                                                   value="@virement.Id" />
+
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-success">
+                                                Valider
+                                            </button>
+                                        </form>
+
+                                        <!-- Rejet avec un motif obligatoire -->
+                                        <form action="@Url.Action(
+                                                          "Rejeter",
+                                                          "VirementsInterAgences")"
+                                              method="post"
+                                              onsubmit="return confirm(
+                                                  'Confirmer le rejet de ce virement ?');">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <input type="hidden"
+                                                   name="id"
+                                                   value="@virement.Id" />
+
+                                            <label for="motif-@virement.Id"
+                                                   class="form-label small mb-1">
+                                                Motif du rejet
+                                            </label>
+
+                                            <input id="motif-@virement.Id"
+                                                   name="motif"
+                                                   type="text"
+                                                   class="form-control form-control-sm mb-2"
+                                                   placeholder="Indiquez le motif"
+                                                   required />
+
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-danger">
+                                                Rejeter
+                                            </button>
+                                        </form>
+                                    </div>
+                                }
+                                else if (virement.Statut == "EnAttente")
+                                {
+                                    <span class="text-muted small">
+                                        En attente de traitement
+                                        par un administrateur
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted small">
+                                        Aucune action disponible
+                                    </span>
+                                }
+                            </td>
+                        </tr>
+                    }
+
+                    @if (!contientVirements)
+                    {
+                        <tr>
+                            <td colspan="7"
+                                class="text-center text-muted py-4">
+                                Aucun virement inter-agences en attente
+                                pour votre agence.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    <div class="mt-4">
+        <a href="@Url.Action("Index", "Home")"
+           class="btn btn-outline-secondary">
+            Retour à l’accueil
+        </a>
+    </div>
+
+</div>

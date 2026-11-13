@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="Skip_Link" xml:space="preserve"><value>Ruka hadi maudhui makuu</value></data>
+  <data name="Lang_Label" xml:space="preserve"><value>Lugha</value></data>
+
+  <data name="Nav_Home" xml:space="preserve"><value>Mwanzo</value></data>
+  <data name="Nav_Agences" xml:space="preserve"><value>Matawi</value></data>
+  <data name="Nav_Clients" xml:space="preserve"><value>Wateja</value></data>
+  <data name="Nav_Comptes" xml:space="preserve"><value>Akaunti</value></data>
+  <data name="Nav_Kyc" xml:space="preserve"><value>Uhakiki wa KYC</value></data>
+  <data name="Nav_Prets" xml:space="preserve"><value>Mikopo</value></data>
+  <data name="Nav_Cartes" xml:space="preserve"><value>Kadi</value></data>
+  <data name="Nav_Login" xml:space="preserve"><value>Ingia</value></data>
+  <data name="Nav_Logout" xml:space="preserve"><value>Toka</value></data>
+
+  <data name="Btn_Create" xml:space="preserve"><value>Unda</value></data>
+  <data name="Btn_Edit" xml:space="preserve"><value>Hariri</value></data>
+  <data name="Btn_Delete" xml:space="preserve"><value>Futa</value></data>
+  <data name="Btn_Details" xml:space="preserve"><value>Maelezo</value></data>
+  <data name="Btn_Save" xml:space="preserve"><value>Hifadhi</value></data>
+  <data name="Btn_Cancel" xml:space="preserve"><value>Ghairi</value></data>
+  <data name="Btn_Search" xml:space="preserve"><value>Tafuta</value></data>
+  <data name="Btn_Back" xml:space="preserve"><value>Rudi</value></data>
+
+  <data name="Msg_Success" xml:space="preserve"><value>Operesheni imefanikiwa</value></data>
+  <data name="Msg_Error" xml:space="preserve"><value>Hitilafu imetokea</value></data>
+  <data name="Msg_Required" xml:space="preserve"><value>Sehemu hii inahitajika</value></data>
+</root>

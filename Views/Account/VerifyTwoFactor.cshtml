@@ -1,0 +1,18 @@
+@model AkarangaBank.Web.ViewModels.TwoFactorViewModel
+@{
+    ViewData["Title"] = "Vérification en deux étapes";
+}
+
+<div class="card-custom mx-auto mt-5" style="max-width: 460px;">
+    <h1 class="h4 fw-bold mb-2"><i class="bi bi-shield-lock text-warning me-2" aria-hidden="true"></i>Vérification en deux étapes</h1>
+    <p>Saisissez le code à 6 chiffres de votre application, ou un code de récupération.</p>
+
+    <form asp-action="VerifyTwoFactor" method="post" novalidate>
+        <div class="mb-3">
+            <input asp-for="Code" class="form-control form-control-lg text-center" autocomplete="one-time-code" autofocus />
+            <span asp-validation-for="Code" class="text-danger small"></span>
+        </div>
+        <button type="submit" class="btn btn-warning fw-bold w-100">Valider</button>
+    </form>
+    <a class="d-block text-center mt-3" asp-action="Login">Retour à la connexion</a>
+</div>

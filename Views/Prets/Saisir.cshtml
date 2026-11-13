@@ -1,0 +1,86 @@
+@model AkarangaBank.Web.ViewModels.PretSaisieViewModel
+@{
+    ViewData["Title"] = "Nouvelle demande de crédit";
+}
+
+<div class="container-fluid" role="region" aria-labelledby="form-title">
+    <div class="card card-custom p-4 mb-4 border-start border-primary border-5 bg-white">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <h1 id="form-title" class="h3 fw-bold text-dark mb-1">
+                    <i class="bi bi-file-earmark-medical text-primary me-2"></i> Saisie d'un Dossier de Crédit
+                </h1>
+                <p class="text-muted small mb-0">Formulaire d'analyse et d'octroi de financement conforme aux directives de la BRB.</p>
+            </div>
+            <a asp-action="Index" class="btn btn-sm btn-outline-dark fw-bold">
+                <i class="bi bi-arrow-left"></i> Retour au portefeuille
+            </a>
+        </div>
+    </div>
+
+    <div class="row justify-content-start">
+        <div class="col-xl-6 col-lg-8">
+            <div class="card card-custom p-4 bg-white">
+                <form asp-action="Saisir" method="post">
+                    @Html.AntiForgeryToken()
+                    
+                    <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="NumeroCompte" class="form-label small fw-bold text-secondary">Numéro de Compte Bénéficiaire</label>
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text bg-light"><i class="bi bi-credit-card-2-front"></i></span>
+                            <input asp-for="NumeroCompte" class="form-control font-monospace" placeholder="Ex: AKR-NGO-0006-2227" required />
+                        </div>
+                        <span asp-validation-for="NumeroCompte" class="text-danger small mt-1 d-block"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="MontantPrincipal" class="form-label small fw-bold text-secondary">Montant du Principal (BIF)</label>
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text bg-light fw-bold">BIF</span>
+                            <input asp-for="MontantPrincipal" type="number" class="form-control font-monospace fw-bold text-dark" placeholder="Ex: 5000000" required />
+                        </div>
+                        <span asp-validation-for="MontantPrincipal" class="text-danger small mt-1 d-block"></span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="TauxInteret" class="form-label small fw-bold text-secondary">Taux d'intérêt annuel (%)</label>
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text bg-light"><i class="bi bi-percent"></i></span>
+                                <input asp-for="TauxInteret" type="text" class="form-control font-monospace" required />
+                            </div>
+                            <span asp-validation-for="TauxInteret" class="text-danger small mt-1 d-block"></span>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="DureeMois" class="form-label small fw-bold text-secondary">Durée de remboursement (Mois)</label>
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text bg-light"><i class="bi bi-calendar-range"></i></span>
+                                <input asp-for="DureeMois" type="number" class="form-control font-monospace" required />
+                            </div>
+                            <span asp-validation-for="DureeMois" class="text-danger small mt-1 d-block"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Remarque" class="form-label small fw-bold text-secondary">Remarques / Objet du crédit</label>
+                        <textarea asp-for="Remarque" class="form-control form-control-sm" rows="3" placeholder="Ex: Financement de campagne caféière..."></textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-between border-top pt-3">
+                        <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Annuler</a>
+                        <button type="submit" class="btn btn-primary btn-sm fw-bold px-3">
+                            <i class="bi bi-save-fill me-1"></i> Enregistrer le dossier
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

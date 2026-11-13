@@ -1,0 +1,176 @@
+@model AkarangaBank.Web.ViewModels.TransactionDepotViewModel
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "Guichet bancaire";
+}
+
+<div class="container py-4">
+    <div class="mb-4">
+        <h1>Guichet bancaire</h1>
+        <p class="text-muted">
+            Akaranga Bank — Dépôt d’espèces
+        </p>
+    </div>
+
+    @if (TempData["Success"] is string succes)
+    {
+        <div class="alert alert-success" role="status">
+            @succes
+        </div>
+    }
+
+    @if (TempData["Warning"] is string avertissement)
+    {
+        <div class="alert alert-warning" role="alert">
+            @avertissement
+        </div>
+    }
+
+    <div class="row g-4">
+        <div class="col-lg-5">
+            <section class="card h-100"
+                     aria-labelledby="titre-compte">
+                <div class="card-header">
+                    <h2 id="titre-compte" class="h5 mb-0">
+                        Compte concerné
+                    </h2>
+                </div>
+
+                <div class="card-body">
+                    <dl>
+                        <dt>Numéro de compte</dt>
+                        <dd>@Model.NumeroCompte</dd>
+
+                        <dt>Titulaire</dt>
+                        <dd>
+                            @(string.IsNullOrWhiteSpace(Model.ClientNomComplet)
+                                ? "Information non disponible"
+                                : Model.ClientNomComplet)
+                        </dd>
+
+                        <dt>Solde à l’ouverture de la page</dt>
+                        <dd class="fs-4">
+                            @Model.SoldeActuel.ToString("N2") BIF
+                        </dd>
+                    </dl>
+
+                    <p class="text-muted mb-0">
+                        Le solde affiché est indicatif.
+                        Le traitement de l’opération est effectué
+                        par le service transactionnel.
+                    </p>
+                </div>
+            </section>
+        </div>
+
+        <div class="col-lg-7">
+            <section class="card"
+                     aria-labelledby="titre-depot">
+                <div class="card-header">
+                    <h2 id="titre-depot" class="h5 mb-0">
+                        Enregistrer un dépôt
+                    </h2>
+                </div>
+
+                <div class="card-body">
+                    <form asp-controller="Transactions"
+                          asp-action="Depot"
+                          method="post">
+
+                        <div asp-validation-summary="All"
+                             class="text-danger mb-3"
+                             role="alert">
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="NumeroCompte"
+                                   class="form-label">
+                                Numéro de compte
+                            </label>
+
+                            <input asp-for="NumeroCompte"
+                                   class="form-control"
+                                   readonly />
+
+                            <span asp-validation-for="NumeroCompte"
+                                  class="text-danger">
+                            </span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Montant"
+                                   class="form-label">
+                                Montant du dépôt (BIF)
+                            </label>
+
+                            <input asp-for="Montant"
+                                   type="number"
+                                   class="form-control"
+                                   min="0.01"
+                                   step="0.01"
+                                   required
+                                   aria-describedby="aide-montant" />
+
+                            <div id="aide-montant"
+                                 class="form-text">
+                                Saisis le montant sans espaces.
+                                Exemple : 10000.
+                            </div>
+
+                            <span asp-validation-for="Montant"
+                                  class="text-danger">
+                            </span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Remarque"
+                                   class="form-label">
+                                Remarque
+                            </label>
+
+                            <textarea asp-for="Remarque"
+                                      class="form-control"
+                                      rows="3"
+                                      placeholder="Motif ou précision concernant le dépôt">
+                            </textarea>
+
+                            <span asp-validation-for="Remarque"
+                                  class="text-danger">
+                            </span>
+                        </div>
+
+                        <div class="alert alert-info">
+                            Vérifie le numéro de compte et le montant
+                            avant de confirmer.
+                            Ce bouton déclenche une opération réelle
+                            dans la base utilisée par l’application.
+                        </div>
+
+                        <div class="d-flex flex-wrap gap-2">
+                            <button type="submit"
+                                    class="btn btn-success">
+                                Confirmer le dépôt
+                            </button>
+
+                            <a href="@Url.Action(
+                                        "Guichet",
+                                        "Transactions",
+                                        new { numeroCompte = Model.NumeroCompte })"
+                               class="btn btn-outline-secondary">
+                                Recharger le compte
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <div class="alert alert-secondary mt-3">
+                Le retrait n’est pas disponible sur cette page :
+                aucune action Retrait n’est présente
+                dans le contrôleur fourni.
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="Skip_Link" xml:space="preserve"><value>Simbukira ku bikuru</value></data>
+  <data name="Lang_Label" xml:space="preserve"><value>Ururimi</value></data>
+
+  <data name="Nav_Home" xml:space="preserve"><value>Ahabanza</value></data>
+  <data name="Nav_Agences" xml:space="preserve"><value>Amashami</value></data>
+  <data name="Nav_Clients" xml:space="preserve"><value>Abakiriya</value></data>
+  <data name="Nav_Comptes" xml:space="preserve"><value>Amakonti</value></data>
+  <data name="Nav_Kyc" xml:space="preserve"><value>Isuzuma rya KYC</value></data>
+  <data name="Nav_Prets" xml:space="preserve"><value>Inguzanyo</value></data>
+  <data name="Nav_Cartes" xml:space="preserve"><value>Amakarata</value></data>
+  <data name="Nav_Login" xml:space="preserve"><value>Kwinjira</value></data>
+  <data name="Nav_Logout" xml:space="preserve"><value>Gusohoka</value></data>
+
+  <data name="Btn_Create" xml:space="preserve"><value>Kurema</value></data>
+  <data name="Btn_Edit" xml:space="preserve"><value>Guhindura</value></data>
+  <data name="Btn_Delete" xml:space="preserve"><value>Gusiba</value></data>
+  <data name="Btn_Details" xml:space="preserve"><value>Ibisobanuro</value></data>
+  <data name="Btn_Save" xml:space="preserve"><value>Kubika</value></data>
+  <data name="Btn_Cancel" xml:space="preserve"><value>Guhagarika</value></data>
+  <data name="Btn_Search" xml:space="preserve"><value>Gushakisha</value></data>
+  <data name="Btn_Back" xml:space="preserve"><value>Gusubira inyuma</value></data>
+
+  <data name="Msg_Success" xml:space="preserve"><value>Igikorwa cagenze neza</value></data>
+  <data name="Msg_Error" xml:space="preserve"><value>Habaye ikosa</value></data>
+  <data name="Msg_Required" xml:space="preserve"><value>Iki gice kirakenewe</value></data>
+</root>

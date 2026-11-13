@@ -1,0 +1,65 @@
+@model System.Collections.Generic.IEnumerable<AkarangaBank.Web.Models.SeuilAML>
+
+@{
+    ViewData["Title"] = "Seuils AML";
+}
+
+<h1>Seuils AML</h1>
+
+<p>
+    Gestion des seuils de vigilance, de déclaration et de blocage.
+</p>
+
+@if (TempData["Succes"] is string succes)
+{
+    <div class="alert alert-success" role="alert">
+        @succes
+    </div>
+}
+
+<div class="table-responsive">
+    <table class="table table-striped table-bordered align-middle">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Code</th>
+                <th>Libellé</th>
+                <th>Montant</th>
+                <th>Devise</th>
+                <th>Type d’opération</th>
+                <th>Actif</th>
+                <th>Dernière modification (UTC)</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var seuil in Model)
+            {
+                <tr>
+                    <td>@seuil.Id</td>
+                    <td>@seuil.Code</td>
+                    <td>@seuil.Libelle</td>
+                    <td>@seuil.Montant.ToString("N2")</td>
+                    <td>@seuil.Devise</td>
+                    <td>@seuil.TypeOperation</td>
+                    <td>@(seuil.Actif ? "Oui" : "Non")</td>
+                    <td>
+                        @seuil.DateModification.ToString("dd/MM/yyyy HH:mm:ss")
+                    </td>
+                    <td>
+                        <a class="btn btn-primary btn-sm"
+                           href="@Url.Action("Edit", "SeuilsAML", new { id = seuil.Id })">
+                            Modifier
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<p class="text-muted">
+    Si la liste est vide, aucun seuil n’est actuellement enregistré.
+    Cette page ne crée pas automatiquement de seuil.
+</p>

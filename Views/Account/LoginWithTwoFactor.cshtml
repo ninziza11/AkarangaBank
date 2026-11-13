@@ -1,0 +1,36 @@
+@{
+    ViewData["Title"] = "Vérification en deux étapes";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h1 class="h4 mb-3">Vérification en deux étapes</h1>
+
+                <form asp-action="LoginWithTwoFactor" method="post">
+                    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                    <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+                    <input type="hidden" name="souvenirMois" value="@ViewData["SouvenirMois"]" />
+
+                    <div class="mb-3">
+                        <label for="codeVerification" class="form-label">
+                            Code de vérification
+                        </label>
+                        <input type="text"
+                               id="codeVerification"
+                               name="codeVerification"
+                               class="form-control"
+                               autocomplete="one-time-code"
+                               required />
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">
+                        Vérifier
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

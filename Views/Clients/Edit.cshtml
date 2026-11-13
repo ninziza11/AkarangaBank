@@ -1,0 +1,99 @@
+@using AkarangaBank.Web.ViewModels
+@model ClientEditViewModel
+
+@{
+    ViewData["Title"] = "Modifier le client";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-warning text-dark">
+            <h2 class="mb-0"><i class="bi bi-pencil-square"></i> Modifier le Client</h2>
+        </div>
+        <div class="card-body">
+            <form asp-action="Edit" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                
+                <!-- Identifiants masqués indispensables pour la mise à jour -->
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="NumeroClient" />
+
+                <div class="row">
+                    <!-- Numéro Client (Lecture seule) -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label font-weight-bold">Numéro de Client</label>
+                        <input class="form-control" value="@Model.NumeroClient" disabled />
+                    </div>
+
+                    <!-- Statut -->
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Statut" class="form-label font-weight-bold">Statut</label>
+                        <select asp-for="Statut" class="form-select">
+                            <option value="Actif">Actif</option>
+                            <option value="Inactif">Inactif</option>
+                            <option value="Suspendu">Suspendu</option>
+                        </select>
+                        <span asp-validation-for="Statut" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Nom -->
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Nom" class="form-label font-weight-bold">Nom</label>
+                        <input asp-for="Nom" class="form-control" />
+                        <span asp-validation-for="Nom" class="text-danger"></span>
+                    </div>
+
+                    <!-- Prénom -->
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Prenom" class="form-label font-weight-bold">Prénom</label>
+                        <input asp-for="Prenom" class="form-control" />
+                        <span asp-validation-for="Prenom" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Téléphone -->
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Telephone" class="form-label font-weight-bold">Téléphone</label>
+                        <input asp-for="Telephone" class="form-control" />
+                        <span asp-validation-for="Telephone" class="text-danger"></span>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Email" class="form-label font-weight-bold">Email</label>
+                        <input asp-for="Email" type="email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Liste déroulante des Agences -->
+                    <div class="col-md-12 mb-4">
+                        <label asp-for="AgenceId" class="form-label font-weight-bold">Agence</label>
+                        <select asp-for="AgenceId" class="form-select" asp-items="Model.AgencesDisponibles">
+                            <option value="">-- Sélectionner une agence --</option>
+                        </select>
+                        <span asp-validation-for="AgenceId" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- Boutons d'action -->
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-warning">
+                        <i class="bi bi-check-circle-fill"></i> Enregistrer les modifications
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left-circle"></i> Retour à la liste
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

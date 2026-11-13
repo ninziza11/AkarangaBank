@@ -1,0 +1,190 @@
+@model IEnumerable<AkarangaBank.Web.Models.DeclarationSoupcon>
+
+@{
+    ViewData["Title"] = "Déclarations CNRF";
+
+    var declarations = new
+        System.Collections.Generic.List<
+            AkarangaBank.Web.Models.DeclarationSoupcon>();
+
+    if (Model != null)
+    {
+        foreach (var declaration in Model)
+        {
+            declarations.Add(declaration);
+        }
+    }
+}
+
+<div class="container-fluid mt-4">
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="mb-1">
+                Déclarations d’opérations suspectes (DOS)
+            </h1>
+
+            <p class="text-muted">
+                Consultation des déclarations et de leur statut.
+            </p>
+        </div>
+
+        <a asp-controller="CNRF"
+           asp-action="Index"
+           class="btn btn-outline-primary">
+            Actualiser
+        </a>
+    </div>
+
+    @if (TempData["Success"] is string successMessage)
+    {
+        <div class="alert alert-success" role="status">
+            @successMessage
+        </div>
+    }
+
+    @if (TempData["Error"] is string errorMessage)
+    {
+        <div class="alert alert-danger" role="alert">
+            @errorMessage
+        </div>
+    }
+
+    <div class="alert alert-warning" role="note">
+        Pour les tests, utilisez uniquement des déclarations fictives.
+        Ne lancez pas de transmission avant d’avoir confirmé
+        que le service fonctionne en mode de test.
+    </div>
+
+    @if (declarations.Count == 0)
+    {
+        <div class="alert alert-info" role="status">
+            Aucune déclaration n’a été retournée pour cette liste.
+            Une DOS doit d’abord être générée avant de pouvoir
+            tester sa transmission.
+        </div>
+    }
+    else
+    {
+        <div class="card shadow-sm">
+
+            <div class="card-header">
+                Liste des déclarations —
+                @declarations.Count déclaration(s)
+            </div>
+
+            <div class="card-body">
+                <div class="table-responsive">
+
+                    <table class="table table-striped table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th scope="col">Date</th>
+                                <th scope="col">Référence</th>
+                                <th scope="col">Client</th>
+                                <th scope="col">Type</th>
+                                <th scope="col">Statut</th>
+                                <th scope="col">Transmission</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var d in declarations)
+                            {
+                                var peutTransmettre =
+                                    d.Statut == "Brouillon"
+                                    || d.Statut == "Validee";
+
+                                var classeStatut =
+                                    d.Statut == "Transmise"
+                                        ? "bg-success"
+                                        : d.Statut == "Accusee"
+                                            ? "bg-info text-dark"
+                                            : "bg-secondary";
+
+                                <tr>
+                                    <td class="text-nowrap">
+                                        @d.DateCreation.ToString("dd/MM/yyyy HH:mm")
+                                    </td>
+
+                                    <td>@d.Reference</td>
+
+                                    <td>
+                                        @if (d.Client != null)
+                                        {
+                                            <span>
+                                                @d.Client.Nom
+                                                @d.Client.Prenom
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">
+                                                Client non chargé
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <td>@d.TypeDeclaration</td>
+
+                                    <td>
+                                        <span class="badge @classeStatut">
+                                            @(string.IsNullOrWhiteSpace(d.Statut)
+                                                ? "Non renseigné"
+                                                : d.Statut)
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        @if (peutTransmettre)
+                                        {
+                                            <form asp-controller="CNRF"
+                                                  asp-action="Transmettre"
+                                                  method="post"
+                                                  asp-antiforgery="true"
+                                                  class="d-inline">
+
+                                                <input type="hidden"
+                                                       name="id"
+                                                       value="@d.Id" />
+
+                                                <button type="submit"
+                                                        class="btn btn-sm btn-success">
+                                                    Transmettre
+                                                </button>
+                                            </form>
+                                        }
+                                        else if (
+                                            d.Statut == "Transmise"
+                                            || d.Statut == "Accusee")
+                                        {
+                                            <span class="text-muted">
+                                                Déjà transmise ou accusée.
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">
+                                                Transmission non proposée
+                                                pour ce statut.
+                                            </span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+
+        <p class="text-muted small mt-3">
+            Dans cette vue, le bouton est affiché uniquement
+            pour les statuts exacts « Brouillon » et « Validee ».
+            Les autorisations et transitions doivent également
+            être contrôlées par le service.
+        </p>
+    }
+
+</div>

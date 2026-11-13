@@ -1,0 +1,250 @@
+@using System.Linq
+@using Microsoft.AspNetCore.Mvc.Rendering
+@model AkarangaBank.Web.ViewModels.VirementInterAgenceViewModel
+
+@{
+    ViewData["Title"] = "Nouveau virement inter-agences";
+
+    var comptesSource =
+        (ViewBag.ComptesSource as IEnumerable<SelectListItem>)
+        ?? Enumerable.Empty<SelectListItem>();
+
+    var comptesDestination =
+        (ViewBag.ComptesDestination as IEnumerable<SelectListItem>)
+        ?? Enumerable.Empty<SelectListItem>();
+
+    var sourceDisponible = comptesSource.Any();
+    var destinationDisponible = comptesDestination.Any();
+
+    var formulaireDisponible =
+        sourceDisponible && destinationDisponible;
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            <div class="mb-4">
+                <h1 class="h3 mb-2">
+                    Nouveau virement inter-agences
+                </h1>
+
+                <p class="text-muted mb-0">
+                    Sélectionnez un compte source et un compte
+                    destination appartenant à deux agences différentes.
+                </p>
+            </div>
+
+            @if (!formulaireDisponible)
+            {
+                <div class="alert alert-warning" role="alert">
+                    <h2 class="h6">
+                        Aucun compte disponible dans au moins une liste
+                    </h2>
+
+                    <p class="mb-2">
+                        Le formulaire ne peut pas être envoyé tant que
+                        les comptes source et destination ne sont pas
+                        disponibles.
+                    </p>
+
+                    <ul class="mb-0">
+                        <li>
+                            Vérifiez l’existence de comptes clients
+                            dans la base utilisée par l’application.
+                        </li>
+                        <li>
+                            Leur statut doit être « Actif ».
+                        </li>
+                        <li>
+                            Les comptes dont le numéro commence par
+                            « 9000 » sont exclus par le contrôleur.
+                        </li>
+                        <li>
+                            Le contrôleur doit alimenter
+                            ViewBag.ComptesSource et
+                            ViewBag.ComptesDestination.
+                        </li>
+                    </ul>
+                </div>
+            }
+
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger" role="alert">
+                    @Html.ValidationSummary(false)
+                </div>
+            }
+
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    Informations du virement
+                </div>
+
+                <div class="card-body p-4">
+
+                    <form action="@Url.Action(
+                                      "Initier",
+                                      "VirementsInterAgences")"
+                          method="post">
+
+                        @Html.AntiForgeryToken()
+
+                        <!-- Compte source -->
+                        <div class="mb-4">
+                            <label for="CompteSourceId"
+                                   class="form-label">
+                                Compte source
+                            </label>
+
+                            @Html.DropDownListFor(
+                                model => model.CompteSourceId,
+                                comptesSource,
+                                "-- Sélectionnez le compte source --",
+                                new
+                                {
+                                    @class = "form-select",
+                                    required = "required",
+                                    aria_describedby = "aide-source"
+                                })
+
+                            <div id="aide-source"
+                                 class="form-text">
+                                Pour le test BJM → GIT, choisissez
+                                un compte affichant (AKR-BJM).
+                            </div>
+
+                            @Html.ValidationMessageFor(
+                                model => model.CompteSourceId,
+                                "",
+                                new { @class = "text-danger small" })
+                        </div>
+
+                        <!-- Compte destination -->
+                        <div class="mb-4">
+                            <label for="CompteDestinationId"
+                                   class="form-label">
+                                Compte destination
+                            </label>
+
+                            @Html.DropDownListFor(
+                                model => model.CompteDestinationId,
+                                comptesDestination,
+                                "-- Sélectionnez le compte destination --",
+                                new
+                                {
+                                    @class = "form-select",
+                                    required = "required",
+                                    aria_describedby = "aide-destination"
+                                })
+
+                            <div id="aide-destination"
+                                 class="form-text">
+                                Pour le test BJM → GIT, choisissez
+                                un compte affichant (AKR-GIT).
+                            </div>
+
+                            @Html.ValidationMessageFor(
+                                model => model.CompteDestinationId,
+                                "",
+                                new { @class = "text-danger small" })
+                        </div>
+
+                        <!-- Montant -->
+                        <div class="mb-4">
+                            <label for="Montant"
+                                   class="form-label">
+                                Montant à transférer
+                            </label>
+
+                            @Html.TextBoxFor(
+                                model => model.Montant,
+                                new
+                                {
+                                    @class = "form-control",
+                                    type = "number",
+                                    min = "0.01",
+                                    step = "0.01",
+                                    required = "required",
+                                    placeholder = "Exemple : 10000",
+                                    aria_describedby = "aide-montant"
+                                })
+
+                            <div id="aide-montant"
+                                 class="form-text">
+                                Le montant est exprimé dans la devise
+                                des comptes. Les deux comptes doivent
+                                avoir la même devise.
+                            </div>
+
+                            @Html.ValidationMessageFor(
+                                model => model.Montant,
+                                "",
+                                new { @class = "text-danger small" })
+                        </div>
+
+                        <!-- Motif -->
+                        <div class="mb-4">
+                            <label for="Motif"
+                                   class="form-label">
+                                Motif du virement
+                            </label>
+
+                            @Html.TextAreaFor(
+                                model => model.Motif,
+                                new
+                                {
+                                    @class = "form-control",
+                                    rows = "3",
+                                    placeholder = "Exemple : TEST-BJM-GIT-001"
+                                })
+
+                            @Html.ValidationMessageFor(
+                                model => model.Motif,
+                                "",
+                                new { @class = "text-danger small" })
+                        </div>
+
+                        <div class="alert alert-info">
+                            Dans le service actuel, l’enregistrement
+                            crée un virement en attente. Le débit et
+                            le crédit des comptes sont réalisés lors
+                            de la validation par l’administrateur.
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="d-flex flex-wrap
+                                    justify-content-between gap-2">
+
+                            <a href="@Url.Action(
+                                         "Index",
+                                         "VirementsInterAgences")"
+                               class="btn btn-outline-secondary">
+                                Annuler
+                            </a>
+
+                            @if (formulaireDisponible)
+                            {
+                                <button type="submit"
+                                        class="btn btn-primary">
+                                    Initier le virement
+                                </button>
+                            }
+                            else
+                            {
+                                <button type="submit"
+                                        class="btn btn-primary"
+                                        disabled>
+                                    Aucun compte disponible
+                                </button>
+                            }
+
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

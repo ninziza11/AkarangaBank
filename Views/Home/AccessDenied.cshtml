@@ -1,0 +1,33 @@
+@{
+    ViewData["Title"] = "Accès Refusé";
+}
+
+<div class="container text-center mt-5 py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-0 shadow p-5 bg-white rounded-3">
+                <div class="card-body">
+                    <div class="display-1 text-danger mb-4">
+                        <i class="bi bi-shield-fill-x animate__animated animate__bounceIn"></i>
+                    </div>
+                    <h2 class="fw-bold text-dark mb-3">Privilèges Insuffisants</h2>
+                    <p class="text-muted mb-4 fs-5">
+                        Votre profil d'acteur système ne possède pas les habilitations nécessaires requises pour accéder à cette ressource ou action.
+                    </p>
+                    <hr class="my-4 text-muted opacity-25" />
+                    <div class="d-flex justify-content-center gap-2">
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-dark">
+                            <i class="bi bi-house-door-fill me-2"></i> Retour Accueil
+                        </a>
+                        <form asp-controller="Account" asp-action="Logout" method="post">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-outline-danger">
+                                <i class="bi bi-box-arrow-left me-2"></i> Changer de compte
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,31 @@
+@{
+    ViewData["Title"] = "Accès refusé";
+    Context.Response.StatusCode = 403;
+}
+
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-danger text-white">
+            Accès refusé
+        </div>
+
+        <div class="card-body">
+            <h1 class="h4">Vous n’avez pas accès à cette fonctionnalité.</h1>
+
+            <p>
+                Votre compte ne dispose pas des autorisations nécessaires
+                pour effectuer cette action.
+            </p>
+
+            <p class="text-muted">
+                Utilisez un compte disposant du rôle prévu pour cette
+                fonctionnalité ou contactez l’administrateur.
+            </p>
+
+            <a href="@Url.Content("~/")"
+               class="btn btn-outline-secondary">
+                Retour à l’accueil
+            </a>
+        </div>
+    </div>
+</div>

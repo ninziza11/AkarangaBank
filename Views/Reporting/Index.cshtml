@@ -1,0 +1,34 @@
+@{
+    ViewData["Title"] = "Centre de Reporting";
+}
+
+<div class="container-fluid" role="region" aria-labelledby="reporting-title">
+    <div class="card card-custom p-4 mb-4 border-start border-primary border-5 bg-white">
+        <h1 id="reporting-title" class="h3 fw-bold text-dark mb-1"><i class="bi bi-file-earmark-bar-graph-fill me-2"></i> Édition d'États & Reporting</h1>
+        <p class="text-muted small mb-0">Extraction des registres légaux, balances comptables et journaux de vigilance LAB/CFT pour la BRB.</p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card card-custom p-4 h-100 bg-white">
+                <h5 class="fw-bold text-dark mb-3"><i class="bi bi-shield-exclamation text-danger"></i> Registre Réglementaire LAB/CFT</h5>
+                <p class="text-muted small">Télécharger l'état complet des alertes AML et des gels de fonds au format normalisé CSV.</p>
+                <div class="mt-auto pt-3">
+                    <a asp-action="ExporterAml" class="btn btn-dark btn-sm fw-bold">
+                        <i class="bi bi-download me-1"></i> Exporter le fichier (.CSV)
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card card-custom p-4 h-100 bg-white">
+                <h5 class="fw-bold text-dark mb-3"><i class="bi bi-journal-text text-primary"></i> Notifications & Trame SMS</h5>
+                <p class="text-muted small">Vérifier l'activation du canal de communication d'urgence pour la notification des soldes et des opérations au comptoir.</p>
+                <div class="mt-auto pt-3">
+                    <span class="badge bg-success p-2"><i class="bi bi-check-circle-fill"></i> Passerelle SMS Active</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

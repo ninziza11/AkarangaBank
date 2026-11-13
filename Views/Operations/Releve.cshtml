@@ -1,0 +1,62 @@
+@model AkarangaBank.Web.ViewModels.ReleveViewModel
+@{
+    ViewData["Title"] = "Relevé de compte";
+}
+
+<h1>Relevé de compte</h1>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h5 class="card-title">
+            Compte @Model.Compte.NumeroCompte
+        </h5>
+
+        <p class="card-text">
+            Client :
+            @Model.Compte.Client.Prenom @Model.Compte.Client.Nom
+        </p>
+
+        <p class="card-text">
+            Solde initial :
+            <strong>@Model.SoldeInitial.ToString("N2") @Model.Compte.Devise</strong>
+        </p>
+
+        <p class="card-text">
+            Solde final :
+            <strong>@Model.SoldeFinal.ToString("N2") @Model.Compte.Devise</strong>
+        </p>
+    </div>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Opération</th>
+            <th>Sens</th>
+            <th>Montant</th>
+            <th>Libellé</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (!Model.Ecritures.Any())
+        {
+            <tr>
+                <td colspan="5" class="text-center">
+                    Aucune écriture disponible.
+                </td>
+            </tr>
+        }
+
+        @foreach (var ecriture in Model.Ecritures)
+        {
+            <tr>
+                <td>@ecriture.DateEcriture.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@ecriture.Operation?.TypeOperation</td>
+                <td>@ecriture.Sens</td>
+                <td>@ecriture.Montant.ToString("N2") @ecriture.Devise</td>
+                <td>@ecriture.Libelle</td>
+            </tr>
+        }
+    </tbody>
+</table>

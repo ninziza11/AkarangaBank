@@ -1,0 +1,51 @@
+@model AkarangaBank.Web.ViewModels.ClientDetailsViewModel
+@{
+    ViewData["Title"] = "Fiche Client - " + Model.Client.NumeroClient;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>@Model.Client.Nom @Model.Client.Prenom</h2>
+    <span class="badge bg-success fs-6">@Model.Client.Statut</span>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <ul class="list-group shadow-sm">
+            <li class="list-group-item"><strong>Numéro Client :</strong> @Model.Client.NumeroClient</li>
+            <li class="list-group-item"><strong>CNI :</strong> @Model.Client.NumeroCNI</li>
+            <li class="list-group-item"><strong>Agence :</strong> @Model.Client.Agence?.Nom (@Model.Client.Agence?.Code)</li>
+        </ul>
+    </div>
+    <div class="col-md-6">
+        <ul class="list-group shadow-sm">
+            <li class="list-group-item"><strong>Téléphone :</strong> @Model.Client.Telephone</li>
+            <li class="list-group-item"><strong>Email :</strong> @Model.Client.Email</li>
+            <li class="list-group-item"><strong>Solde Cumulé :</strong> <span class="text-primary fw-bold">@Model.SoldeTotal.ToString("N2") BIF</span></li>
+        </ul>
+    </div>
+</div>
+
+<h4 class="mt-4">Comptes Rattachés</h4>
+<table class="table table-sm table-striped">
+    <thead>
+        <tr><th>Numéro de Compte</th><th>Type</th><th>Solde</th><th>Statut</th><th></th></tr>
+    </thead>
+    <tbody>
+        @foreach (var c in Model.Comptes)
+        {
+            <tr>
+                <td><strong>@c.NumeroCompte</strong></td>
+                <td>@c.TypeCompte?.Libelle</td>
+                <td>@c.Solde.ToString("N2") @c.Devise</td>
+                <td><span class="badge bg-info">@c.Statut</span></td>
+                <td><a asp-controller="Comptes" asp-action="Details" asp-route-id="@c.Id" class="btn btn-xs btn-primary">Consulter</a></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="mt-3">
+    <a asp-controller="VerificationsKYC" asp-action="Create" asp-route-clientId="@Model.Client.Id" class="btn btn-warning">+ Ajouter Document KYC</a>
+    <a asp-controller="Comptes" asp-action="Create" asp-route-clientId="@Model.Client.Id" class="btn btn-success">+ Ouvrir un Compte</a>
+    <a asp-action="Index" class="btn btn-secondary">Retour à la liste</a>
+</div>

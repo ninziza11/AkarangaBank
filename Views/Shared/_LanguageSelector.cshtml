@@ -1,0 +1,30 @@
+@using System.Globalization
+@inject Microsoft.Extensions.Localization.IStringLocalizer<AkarangaBank.Web.SharedResource> L
+
+@{
+    var cultureActuelle = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+    var returnUrl = Context.Request.Path + Context.Request.QueryString;
+
+    var langues = new[]
+    {
+        (Code: "fr", Nom: "Français"),
+        (Code: "en", Nom: "English"),
+        (Code: "rn", Nom: "Kirundi"),
+        (Code: "sw", Nom: "Kiswahili")
+    };
+}
+
+<form asp-controller="Culture" asp-action="Set" method="post" class="d-flex align-items-center gap-2">
+    <input type="hidden" name="returnUrl" value="@returnUrl" />
+
+    <label for="selecteur-langue" class="form-label mb-0 text-white">@L["Lang_Label"]</label>
+
+    <select id="selecteur-langue" name="culture" class="form-select form-select-sm w-auto">
+        @foreach (var langue in langues)
+        {
+            <option value="@langue.Code" selected="@(langue.Code == cultureActuelle)" lang="@langue.Code">@langue.Nom</option>
+        }
+    </select>
+
+    <button type="submit" class="btn btn-light btn-sm">OK</button>
+</form>

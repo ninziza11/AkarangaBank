@@ -1,0 +1,67 @@
+@model AkarangaBank.Web.Models.Compte
+
+@{
+    ViewData["Title"] = "Solde du compte";
+}
+
+<div class="container py-4">
+    <div class="mb-4">
+        <h1>Solde du compte</h1>
+
+        <p class="text-muted">
+            Akaranga Bank — Consultation
+        </p>
+    </div>
+
+    @if (Model is null)
+    {
+        <div class="alert alert-warning" role="alert">
+            Aucun compte n’a été fourni à cette page.
+        </div>
+    }
+    else
+    {
+        <section class="card shadow-sm"
+                 aria-labelledby="titre-compte">
+
+            <div class="card-header">
+                <h2 id="titre-compte" class="h5 mb-0">
+                    Compte @Model.NumeroCompte
+                </h2>
+            </div>
+
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">
+                        Numéro de compte
+                    </dt>
+
+                    <dd class="col-sm-8">
+                        @Model.NumeroCompte
+                    </dd>
+
+                    <dt class="col-sm-4">
+                        Devise
+                    </dt>
+
+                    <dd class="col-sm-8">
+                        @Model.Devise
+                    </dd>
+
+                    <dt class="col-sm-4">
+                        Solde
+                    </dt>
+
+                    <dd class="col-sm-8 fs-3">
+                        @Model.Solde.ToString("N2") @Model.Devise
+                    </dd>
+                </dl>
+
+                <p class="text-muted mt-3 mb-0">
+                    Le montant affiché correspond au solde transmis
+                    par le serveur lors du chargement de cette page.
+                </p>
+            </div>
+        </section>
+    }
+</div>

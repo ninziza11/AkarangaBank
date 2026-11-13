@@ -1,0 +1,249 @@
+@{
+    Layout = null;
+    ViewData["Title"] = "Connexion sécurisée";
+
+    var identifiantSaisi =
+        ViewData.ModelState["identifiant"]?.AttemptedValue
+        ?? string.Empty;
+
+    var returnUrl = ViewData["ReturnUrl"] as string;
+}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>Akaranga Bank — Connexion</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            min-height: 100%;
+            background-color: #121824;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            padding: 24px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #f8fafc;
+            background-color: #121824;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 440px;
+            padding: 36px 28px;
+            background-color: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 20px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+        }
+
+        .login-header {
+            margin-bottom: 28px;
+            text-align: center;
+        }
+
+        .brand-mark {
+            display: inline-flex;
+            width: 58px;
+            height: 58px;
+            margin-bottom: 16px;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #f59e0b;
+            border-radius: 14px;
+            background-color: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .login-header h1 {
+            margin: 0;
+            color: #ffffff;
+            font-size: 28px;
+        }
+
+        .login-header p {
+            margin: 10px 0 0;
+            color: #fbbf24;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #e2e8f0;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .form-input {
+            display: block;
+            width: 100%;
+            padding: 13px 14px;
+            border: 2px solid #475569;
+            border-radius: 10px;
+            background-color: #0f172a;
+            color: #f8fafc;
+            font: inherit;
+        }
+
+        .form-input::placeholder {
+            color: #94a3b8;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.25);
+        }
+
+        .form-help {
+            margin: 8px 0 0;
+            color: #cbd5e1;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .validation-summary {
+            margin-bottom: 20px;
+            padding: 12px 14px;
+            border: 1px solid #f87171;
+            border-radius: 10px;
+            background-color: rgba(239, 68, 68, 0.12);
+            color: #fecaca;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .validation-summary ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .login-button {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            background-color: #f59e0b;
+            color: #0f172a;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .login-button:hover {
+            background-color: #fbbf24;
+        }
+
+        .login-button:focus-visible {
+            outline: 3px solid #f8fafc;
+            outline-offset: 4px;
+        }
+
+        .login-footer {
+            margin-top: 26px;
+            padding-top: 18px;
+            border-top: 1px solid #475569;
+            text-align: center;
+            color: #cbd5e1;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body>
+    <main class="login-card" aria-labelledby="login-title">
+        <header class="login-header">
+            <div class="brand-mark" aria-hidden="true">
+                AB
+            </div>
+
+            <h1 id="login-title">Akaranga Bank</h1>
+
+            <p>Connexion à votre espace d’agence</p>
+        </header>
+
+        <form action="@Url.Action("Login", "Account")" method="post">
+            @Html.AntiForgeryToken()
+
+            <input type="hidden"
+                   name="returnUrl"
+                   value="@returnUrl" />
+
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="validation-summary" role="alert">
+                    @Html.ValidationSummary(false)
+                </div>
+            }
+
+            <div class="form-group">
+                <label for="identifiant" class="form-label">
+                    Identifiant ou adresse e-mail
+                </label>
+
+                <input id="identifiant"
+                       name="identifiant"
+                       type="text"
+                       class="form-input"
+                       value="@identifiantSaisi"
+                       placeholder="Votre identifiant ou votre e-mail"
+                       autocomplete="username"
+                       autocapitalize="none"
+                       spellcheck="false"
+                       aria-describedby="identifiant-help"
+                       required />
+
+                <p id="identifiant-help" class="form-help">
+                    Saisissez le nom d’utilisateur ou l’adresse e-mail
+                    associés à votre compte.
+                </p>
+            </div>
+
+            <div class="form-group">
+                <label for="motDePasse" class="form-label">
+                    Mot de passe
+                </label>
+
+                <input id="motDePasse"
+                       name="motDePasse"
+                       type="password"
+                       class="form-input"
+                       placeholder="Votre mot de passe"
+                       autocomplete="current-password"
+                       required />
+            </div>
+
+            <button type="submit" class="login-button">
+                Ouvrir la session d’agence
+            </button>
+        </form>
+
+        <footer class="login-footer">
+            Accès réservé aux utilisateurs autorisés.
+        </footer>
+    </main>
+</body>
+</html>

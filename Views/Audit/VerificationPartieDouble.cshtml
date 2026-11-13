@@ -1,0 +1,186 @@
+@model System.Collections.IEnumerable
+
+@{
+    ViewData["Title"] = "Vérification de la partie double";
+
+    var statut = System.Convert.ToString(
+        ViewData["StatutComptable"]
+    ) ?? "Aucun résultat de vérification disponible.";
+
+    var controleReussi = statut.StartsWith(
+        "CONTRÔLE RÉUSSI",
+        System.StringComparison.OrdinalIgnoreCase
+    );
+
+    var anomalie = statut.StartsWith(
+        "ANOMALIE",
+        System.StringComparison.OrdinalIgnoreCase
+    );
+
+    var classeAlerte = controleReussi
+        ? "alert-success"
+        : anomalie
+            ? "alert-danger"
+            : "alert-warning";
+
+    var lignes =
+        new System.Collections.Generic.List<object>();
+
+    if (Model != null)
+    {
+        foreach (var element in Model)
+        {
+            if (element != null)
+            {
+                lignes.Add(element);
+            }
+        }
+    }
+}
+
+<div class="container mt-4">
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="mb-1">Vérification de la partie double</h1>
+            <p class="text-muted">
+                Comparaison des débits et crédits par opération.
+            </p>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2">
+            <a href="@Url.Action("GrandLivre", "Audit")"
+               class="btn btn-outline-secondary">
+                Grand livre
+            </a>
+
+            <a href="@Url.Action("VerificationPartieDouble", "Audit")"
+               class="btn btn-primary">
+                Relancer le contrôle
+            </a>
+        </div>
+    </div>
+
+    <div class="alert @classeAlerte" role="status">
+        @statut
+    </div>
+
+    @if (lignes.Count > 0)
+    {
+        <div class="card shadow-sm mb-4">
+            <div class="card-header">
+                Opérations déséquilibrées — @lignes.Count
+            </div>
+
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th scope="col">ID opération</th>
+                                <th scope="col" class="text-end">
+                                    Total débits
+                                </th>
+                                <th scope="col" class="text-end">
+                                    Total crédits
+                                </th>
+                                <th scope="col" class="text-end">
+                                    Écart débits − crédits
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var ligne in lignes)
+                            {
+                                var typeLigne = ligne.GetType();
+
+                                var operationId = typeLigne
+                                    .GetProperty("OperationId")
+                                    ?.GetValue(ligne);
+
+                                var valeurDebit = typeLigne
+                                    .GetProperty("TotalDebit")
+                                    ?.GetValue(ligne);
+
+                                var valeurCredit = typeLigne
+                                    .GetProperty("TotalCredit")
+                                    ?.GetValue(ligne);
+
+                                if (valeurDebit == null || valeurCredit == null)
+                                {
+                                    <tr class="table-warning">
+                                        <td colspan="4">
+                                            Résultat incompatible :
+                                            les totaux de cette ligne
+                                            ne sont pas disponibles.
+                                        </td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    var debit = System.Convert.ToDecimal(
+                                        valeurDebit
+                                    );
+
+                                    var credit = System.Convert.ToDecimal(
+                                        valeurCredit
+                                    );
+
+                                    var ecart = debit - credit;
+
+                                    <tr class="table-danger">
+                                        <td>@operationId</td>
+
+                                        <td class="text-end">
+                                            @debit.ToString("N2")
+                                        </td>
+
+                                        <td class="text-end">
+                                            @credit.ToString("N2")
+                                        </td>
+
+                                        <td class="text-end">
+                                            @ecart.ToString("N2")
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="card">
+        <div class="card-body">
+            <h2 class="h5">Portée du contrôle</h2>
+
+            <ul class="mb-0">
+                <li>
+                    Le contrôleur compare les montants « Debit »
+                    et « Credit » regroupés par OperationId.
+                </li>
+                <li>
+                    Une égalité ne prouve pas que toutes les écritures
+                    attendues ont été enregistrées.
+                </li>
+                <li>
+                    Ce contrôle ne vérifie pas la validité des comptes
+                    utilisés ni les autorisations de l’opération.
+                </li>
+                <li>
+                    Le calcul actuel ne ventile pas les montants par devise.
+                    Son interprétation suppose une même devise ou une
+                    unité comptable commune pour les montants comparés.
+                </li>
+                <li>
+                    Une liste vide ne signifie pas à elle seule que
+                    le contrôle a réussi : consulte le statut ci-dessus.
+                </li>
+            </ul>
+        </div>
+    </div>
+
+</div>

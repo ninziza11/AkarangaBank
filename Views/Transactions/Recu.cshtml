@@ -1,0 +1,95 @@
+@model AkarangaBank.Web.Models.Operation
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = $"Bordereau {Model.Reference}";
+}
+
+<!-- Style spécifique pour l'impression en format Ticket -->
+<style>
+    @@media print {
+        /* Masquer la navbar, le menu de gauche et le footer d'Akaranga Bank */
+        nav, footer, .btn, .navbar, .navbar-custom {
+            display: none !important;
+        }
+        body {
+            background-color: #fff !important;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .ticket-caisse {
+            box-shadow: none !important;
+            border: none !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            padding: 0 !important;
+        }
+    }
+    .ticket-caisse {
+        max-width: 500/htmlpx;
+        margin: 0 auto;
+        border: 1px dashed #212529;
+    }
+</style>
+
+<div class="container mt-4 mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <a asp-controller="Comptes" asp-action="Index" class="btn btn-sm btn-outline-secondary font-monospace fw-bold">
+            <i class="bi bi-arrow-left"></i> Retour aux comptes
+        </a>
+        <button onclick="window.print();" class="btn btn-sm btn-primary fw-bold px-3 shadow-sm">
+            <i class="bi bi-printer-fill me-1"></i> Imprimer le Bordereau
+        </button>
+    </div>
+
+    <!-- 📄 FORMAT TICKET DE CAISSE BANCAIRE -->
+    <div class="card ticket-caisse p-4 bg-white shadow-sm font-monospace text-dark">
+        <div class="text-center border-bottom pb-3 mb-3">
+            <h4 class="fw-bold mb-1">AKARANGA BANK S.A.</h4>
+            <p class="small text-muted mb-0">Agence Centrale - Gitega, Burundi</p>
+            <p class="small text-muted mb-0">Téléphone : +257 22 40 XX XX</p>
+        </div>
+
+        <div class="mb-3 small">
+            <div><strong>Référence :</strong> @Model.Reference</div>
+            <div><strong>Date :</strong> @Model.DateCreation.ToString("dd/MM/yyyy HH:mm:ss")</div>
+            <div><strong>Opérateur :</strong> @User.Identity?.Name</div>
+        </div>
+
+        <div class="border-top border-bottom py-3 my-3">
+            <h5 class="text-center fw-bold text-uppercase mb-3">BORDEREAU DE @Model.TypeOperation</h5>
+            
+            <div class="row g-2 small mb-2">
+                <div class="col-5 text-muted">Numéro de Compte:</div>
+                <div class="col-7 fw-bold">@Model.Compte?.NumeroCompte</div>
+            </div>
+            <div class="row g-2 small mb-2">
+                <div class="col-5 text-muted">Titulaire :</div>
+                <div class="col-7 fw-bold text-uppercase">@Model.Compte?.Client?.Nom @Model.Compte?.Client?.Prenom</div>
+            </div>
+            <div class="row g-2 small mb-2">
+                <div class="col-5 text-muted">Devise :</div>
+                <div class="col-7 font-monospace">@Model.Devise</div>
+            </div>
+        </div>
+
+        <div class="text-center py-2 bg-light rounded mb-4">
+            <span class="text-muted small fw-bold text-uppercase d-block">Montant de l'opération</span>
+            <span class="h3 fw-bold text-success font-monospace">@string.Format("{0:N2}", Model.Montant) BIF</span>
+        </div>
+
+        <div class="row justify-content-between mt-5 pt-4 border-top text-center small">
+            <div class="col-5">
+                <p class="mb-5 text-muted">Signature Client</p>
+                <div class="border-bottom w-75 mx-auto"></div>
+            </div>
+            <div class="col-5">
+                <p class="mb-5 text-muted">Cachet Guichetier</p>
+                <div class="border-bottom w-75 mx-auto"></div>
+            </div>
+        </div>
+
+        <div class="text-center mt-5 pt-3 border-top text-muted" style="font-size: 0.75rem;">
+            <p class="mb-0">Merci pour votre confiance en Akaranga Bank.</p>
+            <p class="mb-0">Opération certifiée et immuable sous contrôle ACID.</p>
+        </div>
+    </div>
+</div>

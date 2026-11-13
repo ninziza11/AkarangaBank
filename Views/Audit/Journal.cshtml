@@ -1,0 +1,104 @@
+@model System.Collections.Generic.List<AkarangaBank.Web.Models.AuditLog>
+
+@{
+    ViewData["Title"] = "Piste d’audit";
+}
+
+<div class="container-fluid mt-4">
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="mb-1">Piste d’audit</h1>
+            <p class="text-muted">
+                Événements enregistrés dans le journal d’audit.
+            </p>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2">
+            <a href="@Url.Action("GrandLivre", "Audit")"
+               class="btn btn-outline-secondary">
+                Grand livre
+            </a>
+
+            <a href="@Url.Action("VerificationPartieDouble", "Audit")"
+               class="btn btn-outline-primary">
+                Vérifier la partie double
+            </a>
+
+            <a href="@Url.Action("Journal", "Audit")"
+               class="btn btn-primary">
+                Actualiser
+            </a>
+        </div>
+    </div>
+
+    @if (Model.Count == 0)
+    {
+        <div class="alert alert-info" role="status">
+            Aucun événement d’audit n’a été retourné par la base.
+        </div>
+    }
+    else
+    {
+        <div class="card shadow-sm">
+            <div class="card-header">
+                Journal des événements — @Model.Count ligne(s)
+            </div>
+
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Action</th>
+                                <th scope="col">Table concernée</th>
+                                <th scope="col">ID enregistrement</th>
+                                <th scope="col">Valeur avant</th>
+                                <th scope="col">Valeur après</th>
+                                <th scope="col">Adresse IP</th>
+                                <th scope="col">User-Agent</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var journal in Model)
+                            {
+                                <tr>
+                                    <td>@journal.Id</td>
+
+                                    <td class="text-nowrap">
+                                        @journal.DateEvenement.ToString("dd/MM/yyyy HH:mm:ss")
+                                    </td>
+
+                                    <td>@journal.Action</td>
+
+                                    <td>@journal.TableConcernee</td>
+
+                                    <td>@journal.EnregistrementId</td>
+
+                                    <td style="white-space: pre-wrap; overflow-wrap: anywhere;">@(journal.ValeurAvant ?? "—")</td>
+
+                                    <td style="white-space: pre-wrap; overflow-wrap: anywhere;">@(journal.ValeurApres ?? "—")</td>
+
+                                    <td>@journal.AdresseIP</td>
+
+                                    <td style="overflow-wrap: anywhere;">
+                                        @journal.UserAgent
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+
+    <p class="text-muted small mt-3">
+        Cette page affiche uniquement les événements déjà enregistrés.
+        Elle ne crée pas de traces d’audit.
+    </p>
+
+</div>

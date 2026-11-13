@@ -1,0 +1,108 @@
+@model IEnumerable<AkarangaBank.Web.Models.AuditLog>
+@{
+    ViewData["Title"] = "Piste d'audit";
+}
+
+<h1 class="mb-4">Piste d'audit</h1>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-md-3">
+        <input type="text"
+               name="action"
+               value="@ViewBag.Action"
+               class="form-control"
+               placeholder="Action..." />
+    </div>
+
+    <div class="col-md-3">
+        <input type="text"
+               name="table"
+               value="@ViewBag.Table"
+               class="form-control"
+               placeholder="Table..." />
+    </div>
+
+    <div class="col-md-2">
+        <input type="date"
+               name="du"
+               value="@(((DateTime?)ViewBag.Du)?.ToString("yyyy-MM-dd"))"
+               class="form-control" />
+    </div>
+
+    <div class="col-md-2">
+        <input type="date"
+               name="au"
+               value="@(((DateTime?)ViewBag.Au)?.ToString("yyyy-MM-dd"))"
+               class="form-control" />
+    </div>
+
+    <div class="col-md-2 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary w-100">
+            Filtrer
+        </button>
+    </div>
+</form>
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Utilisateur</th>
+                <th>Action</th>
+                <th>Table</th>
+                <th>Enregistrement</th>
+                <th>Adresse IP</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model is null || !Model.Any())
+            {
+                <tr>
+                    <td colspan="6" class="text-center">
+                        Aucune entrée d'audit trouvée.
+                    </td>
+                </tr>
+            }
+            else
+            {
+                foreach (var log in Model)
+                {
+                    <tr>
+                        <td>
+                            @log.DateEvenement.ToString("dd/MM/yyyy HH:mm:ss")
+                        </td>
+                        <td>@log.Utilisateur</td>
+                        <td>@log.Action</td>
+                        <td>@log.TableConcernee</td>
+                        <td>@log.EnregistrementId</td>
+                        <td>@log.AdresseIP</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+@if (ViewBag.TotalPages != null && (int)ViewBag.TotalPages > 1)
+{
+    <nav>
+        <ul class="pagination">
+            @for (var i = 1; i <= (int)ViewBag.TotalPages; i++)
+            {
+                <li class="page-item @(i == (int)ViewBag.Page ? "active" : "")">
+                    <a class="page-link"
+                       asp-controller="Audit"
+                       asp-action="Index"
+                       asp-route-action="@ViewBag.Action"
+                       asp-route-table="@ViewBag.Table"
+                       asp-route-du="@ViewBag.Du"
+                       asp-route-au="@ViewBag.Au"
+                       asp-route-page="@i">
+                        @i
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
+}

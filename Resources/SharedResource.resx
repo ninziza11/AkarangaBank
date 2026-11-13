@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="Skip_Link" xml:space="preserve"><value>Aller au contenu principal</value></data>
+  <data name="Lang_Label" xml:space="preserve"><value>Langue</value></data>
+
+  <data name="Nav_Home" xml:space="preserve"><value>Accueil</value></data>
+  <data name="Nav_Agences" xml:space="preserve"><value>Agences</value></data>
+  <data name="Nav_Clients" xml:space="preserve"><value>Clients</value></data>
+  <data name="Nav_Comptes" xml:space="preserve"><value>Comptes</value></data>
+  <data name="Nav_Kyc" xml:space="preserve"><value>Vérifications KYC</value></data>
+  <data name="Nav_Prets" xml:space="preserve"><value>Prêts</value></data>
+  <data name="Nav_Cartes" xml:space="preserve"><value>Cartes</value></data>
+  <data name="Nav_Login" xml:space="preserve"><value>Connexion</value></data>
+  <data name="Nav_Logout" xml:space="preserve"><value>Déconnexion</value></data>
+
+  <data name="Btn_Create" xml:space="preserve"><value>Créer</value></data>
+  <data name="Btn_Edit" xml:space="preserve"><value>Modifier</value></data>
+  <data name="Btn_Delete" xml:space="preserve"><value>Supprimer</value></data>
+  <data name="Btn_Details" xml:space="preserve"><value>Détails</value></data>
+  <data name="Btn_Save" xml:space="preserve"><value>Enregistrer</value></data>
+  <data name="Btn_Cancel" xml:space="preserve"><value>Annuler</value></data>
+  <data name="Btn_Search" xml:space="preserve"><value>Rechercher</value></data>
+  <data name="Btn_Back" xml:space="preserve"><value>Retour</value></data>
+
+  <data name="Msg_Success" xml:space="preserve"><value>Opération réussie</value></data>
+  <data name="Msg_Error" xml:space="preserve"><value>Une erreur est survenue</value></data>
+  <data name="Msg_Required" xml:space="preserve"><value>Ce champ est obligatoire</value></data>
+
+</root>

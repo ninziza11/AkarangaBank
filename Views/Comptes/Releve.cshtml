@@ -1,0 +1,101 @@
+@using AkarangaBank.Web.ViewModels
+@model ReleveCompteViewModel
+
+@{
+    ViewData["Title"] = "Extrait de Compte";
+}
+
+<div class="container mt-4">
+    <!-- En-tête -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2><i class="bi bi-file-earmark-text text-primary"></i> Relevé de Compte Bancaire</h2>
+            <h5 class="text-muted">N° @Model.NumeroCompte — @Model.ClientNomComplet</h5>
+        </div>
+        <div class="text-end">
+            <h6 class="text-muted small text-uppercase mb-1">Solde Actuel</h6>
+            <h3 class="fw-bold text-dark">@Model.SoldeActuel.ToString("N2") @Model.Devise</h3>
+        </div>
+    </div>
+
+    <!-- Barre de filtrage par date et export Excel -->
+    <div class="card bg-light mb-4 shadow-sm">
+        <div class="card-body">
+            <form asp-action="Releve" method="get" class="row g-3 align-items-end">
+                <input type="hidden" name="id" value="@Model.CompteId" />
+                <div class="col-md-3">
+                    <label class="form-label small fw-bold">Du</label>
+                    <input type="date" name="dateDebut" class="form-control form-control-sm" value="@Model.DateDebut?.ToString("yyyy-MM-dd")" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small fw-bold">Au</label>
+                    <input type="date" name="dateFin" class="form-control form-control-sm" value="@Model.DateFin?.ToString("yyyy-MM-dd")" />
+                </div>
+                <div class="col-md-3 gap-2 d-flex">
+                    <button type="submit" class="btn btn-primary btn-sm w-100">
+                        <i class="bi bi-filter"></i> Filtrer
+                    </button>
+                </div>
+                <div class="col-md-3 text-end">
+                    <!-- Exportation CSV Excel réglementaire -->
+                    <a asp-action="ExporterReleveCSV" asp-route-id="@Model.CompteId" class="btn btn-outline-success btn-sm w-100">
+                        <i class="bi bi-file-earmark-spreadsheet"></i> Exporter en CSV (Excel)
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tableau de l'historique des écritures -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0"><i class="bi bi-list-nested"></i> Liste des opérations récentes</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Date / Heure</th>
+                            <th>N° Référence Piece</th>
+                            <th>Libellé de l'opération</th>
+                            <th class="text-end text-danger">Débit (-)</th>
+                            <th class="text-end text-success">Crédit (+)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Mouvements != null && Model.Mouvements.Any())
+                        {
+                            foreach (var item in Model.Mouvements)
+                            {
+                                <tr>
+                                    <td class="font-monospace small">@item.DateComptable.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                    <td><span class="badge bg-secondary font-monospace">@item.NumeroPiece</span></td>
+                                    <td>@item.LibelleOperation</td>
+                                    <td class="text-end text-danger fw-bold">
+                                        @(item.Debit > 0 ? $"- {item.Debit.ToString("N2")}" : "-")
+                                    </td>
+                                    <td class="text-end text-success fw-bold">
+                                        @(item.Credit > 0 ? $"+ {item.Credit.ToString("N2")}" : "-")
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center py-4 text-muted">Aucun mouvement comptable enregistré pour cette période.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-5">
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="bi bi-arrow-left-circle"></i> Retour à la gestion des comptes
+        </a>
+    </div>
+</div>

@@ -1,0 +1,83 @@
+@using AkarangaBank.Web.ViewModels
+@model ClientKycUpdateViewModel
+
+@{
+    ViewData["Title"] = "Mise à jour KYC";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-primary">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="bi bi-shield-lock-fill"></i> Mise à jour de Conformité KYC</h4>
+                </div>
+                <div class="card-body">
+                    <!-- En-tête dossier client -->
+                    <div class="bg-light p-3 rounded mb-4">
+                        <p class="mb-1 text-muted small text-uppercase fw-bold">Dossier Titulaire</p>
+                        <h5 class="mb-2 text-dark">@Model.NomComplet</h5>
+                        <span class="badge bg-secondary font-monospace">N° Code : @Model.NumeroClient</span>
+                    </div>
+
+                    <form asp-action="Kyc" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="ClientId" />
+                        <input type="hidden" asp-for="NumeroClient" />
+                        <input type="hidden" asp-for="NomComplet" />
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <!-- Type de pièce -->
+                        <div class="mb-3">
+                            <label asp-for="TypePieceId" class="form-label font-weight-bold">Nature du document fourni</label>
+                            <select asp-for="TypePieceId" class="form-select">
+                                <option value="CNI">Carte Nationale d'Identité (CNI)</option>
+                                <option value="Passeport">Passeport International</option>
+                                <option value="Resident">Carte de Résident / Réfugié</option>
+                            </select>
+                            <span asp-validation-for="TypePieceId" class="text-danger"></span>
+                        </div>
+
+                        <!-- Numéro de pièce -->
+                        <div class="mb-3">
+                            <label asp-for="NumeroCNI" class="form-label font-weight-bold">Numéro d'immatriculation du document</label>
+                            <input asp-for="NumeroCNI" class="form-control font-monospace" placeholder="Saisissez le numéro officiel..." />
+                            <span asp-validation-for="NumeroCNI" class="text-danger"></span>
+                        </div>
+
+                        <!-- Date d'expiration -->
+                        <div class="mb-3">
+                            <label asp-for="DateExpirationPiece" class="form-label font-weight-bold">Date de fin de validité</label>
+                            <input asp-for="DateExpirationPiece" type="date" class="form-control" />
+                            <span asp-validation-for="DateExpirationPiece" class="text-danger"></span>
+                        </div>
+
+                        <!-- Statut de vigilance -->
+                        <div class="mb-4">
+                            <label asp-for="StatutKyc" class="form-label font-weight-bold">Décision de conformité (Statut)</label>
+                            <select asp-for="StatutKyc" class="form-select border-primary">
+                                <option value="Actif">Actif / Validé (Dossier Conforme)</option>
+                                <option value="Inactif">Inactif / Non Vérifié</option>
+                                <option value="Suspendu">Suspendu / Gelé (Alerte Risque)</option>
+                            </select>
+                            <span asp-validation-for="StatutKyc" class="text-danger"></span>
+                        </div>
+
+                        <!-- Boutons -->
+                        <div class="d-flex justify-content-between mt-4">
+                            <a asp-action="Details" asp-route-id="@Model.ClientId" class="btn btn-outline-secondary">Annuler</a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-shield-fill-check"></i> Enregistrer et Certifier
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

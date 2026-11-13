@@ -1,0 +1,45 @@
+@model AkarangaBank.Web.ViewModels.TwoFactorViewModel
+@{
+    ViewData["Title"] = "Activer la 2FA";
+}
+
+<div class="card-custom mx-auto" style="max-width: 560px;">
+    <h1 class="h4 fw-bold mb-3">Activer l'authentification à deux facteurs</h1>
+
+    <ol class="mb-4">
+        <li>Ouvrez Google Authenticator ou Microsoft Authenticator.</li>
+        <li>Scannez le QR code ci-dessous.</li>
+        <li>Saisissez le code à 6 chiffres affiché dans l'application.</li>
+    </ol>
+
+    <div class="text-center mb-3">
+        <div id="qrcode" class="d-inline-block bg-white p-3 rounded" role="img" aria-label="QR code à scanner"></div>
+    </div>
+
+    <p class="small text-center">
+        Impossible de scanner ? Saisissez cette clé à la main :<br />
+        <code class="user-select-all">@Model.SecretKey</code>
+    </p>
+
+    <form asp-action="EnableTwoFactor" method="post" novalidate>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="mb-3">
+            <label asp-for="Code" class="form-label fw-bold">Code à 6 chiffres</label>
+            <input asp-for="Code" class="form-control form-control-lg text-center" inputmode="numeric"
+                   autocomplete="one-time-code" maxlength="7" autofocus />
+            <span asp-validation-for="Code" class="text-danger small"></span>
+        </div>
+        <button type="submit" class="btn btn-warning fw-bold w-100">Vérifier et activer</button>
+    </form>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script>
+        new QRCode(document.getElementById('qrcode'), {
+            text: @Json.Serialize(Model.QrCodeUrl),
+            width: 200,
+            height: 200
+        });
+    </script>
+}

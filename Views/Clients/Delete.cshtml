@@ -1,0 +1,47 @@
+@model AkarangaBank.Web.Models.Client
+
+@{
+    ViewData["Title"] = "Supprimer le client";
+}
+
+<div class="container mt-4">
+    <div class="card border-danger shadow-sm">
+        <div class="card-header bg-danger text-white">
+            <h2 class="mb-0"><i class="bi bi-exclamation-triangle-fill"></i> Confirmer la suppression</h2>
+        </div>
+        <div class="card-body">
+            <h4 class="text-danger mb-4">Êtes-vous sûr de vouloir supprimer définitivement ce client ? Cette action est irréversible.</h4>
+            
+            <div class="row bg-light p-3 rounded mb-4">
+                <div class="col-sm-3 font-weight-bold">Numéro de Client :</div>
+                <div class="col-sm-9">@Model.NumeroClient</div>
+
+                <div class="col-sm-3 font-weight-bold mt-2">Nom complet :</div>
+                <div class="col-sm-9 mt-2">@Model.Nom @Model.Prenom</div>
+
+                <div class="col-sm-3 font-weight-bold mt-2">Téléphone :</div>
+                <div class="col-sm-9 mt-2">@Model.Telephone</div>
+
+                <div class="col-sm-3 font-weight-bold mt-2">Email :</div>
+                <div class="col-sm-9 mt-2">@Model.Email</div>
+
+                <div class="col-sm-3 font-weight-bold mt-2">Statut :</div>
+                <div class="col-sm-9 mt-2"><span class="badge bg-secondary">@Model.Statut</span></div>
+            </div>
+
+            <!-- Formulaire qui va déclencher la méthode POST DeleteConfirmed du contrôleur -->
+            <form asp-action="Delete" method="post">
+                <input type="hidden" asp-for="Id" />
+                
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash-fill"></i> Supprimer définitivement
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left-circle"></i> Annuler et retourner à la liste
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

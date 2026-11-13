@@ -1,0 +1,72 @@
+@using AkarangaBank.Web.ViewModels
+@model VirementViewModel
+
+@{
+    ViewData["Title"] = "Nouveau Virement";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-dark text-white py-3">
+                <h5 class="mb-0"><i class="bi bi-arrow-left-right text-primary me-2"></i> Initiation de Virement Interbancaire</h5>
+            </div>
+            <div class="card-body p-4">
+
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger small" role="alert">
+                        <div asp-validation-summary="ModelOnly"></div>
+                    </div>
+                }
+
+                <form asp-action="Initier" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <!-- Compte Source -->
+                    <div class="mb-3">
+                        <label asp-for="NumeroCompteSource" class="form-label small fw-bold text-secondary"></label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="bi bi-dash-circle-fill text-danger"></i></span>
+                            <input asp-for="NumeroCompteSource" class="form-control font-monospace" placeholder="Ex: BIF-0001-1234" value="BIF-0001-0001" />
+                        </div>
+                        <span asp-validation-for="NumeroCompteSource" class="text-danger small mt-1 d-block"></span>
+                    </div>
+
+                    <!-- Compte Destination -->
+                    <div class="mb-3">
+                        <label asp-for="NumeroCompteDestination" class="form-label small fw-bold text-secondary"></label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="bi bi-plus-circle-fill text-success"></i></span>
+                            <input asp-for="NumeroCompteDestination" class="form-control font-monospace" placeholder="Ex: BIF-0002-5678" value="BIF-0002-0002" />
+                        </div>
+                        <span asp-validation-for="NumeroCompteDestination" class="text-danger small mt-1 d-block"></span>
+                    </div>
+
+                    <!-- Montant -->
+                    <div class="mb-4">
+                        <label asp-for="Montant" class="form-label small fw-bold text-secondary">Montant à transférer (BIF)</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light fw-bold">BIF</span>
+                            <input asp-for="Montant" type="number" class="form-control font-monospace fw-bold text-dark" value="250000" />
+                        </div>
+                        <span asp-validation-for="Montant" class="text-danger small mt-1 d-block"></span>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="d-flex justify-content-between pt-2">
+                        <a asp-controller="Comptes" asp-action="Index" class="btn btn-outline-secondary btn-sm">Annuler</a>
+                        <button type="submit" class="btn btn-dark btn-sm fw-bold">
+                            <i class="bi bi-check2-circle"></i> Passer l'écriture comptable
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,37 @@
+@{
+    ViewData["Title"] = "Mon compte";
+    bool actif = ViewData["DeuxFAActive"] is true;
+}
+
+<div class="card-custom mb-4">
+    <h1 class="h4 fw-bold mb-3"><i class="bi bi-person-circle text-warning me-2" aria-hidden="true"></i>Mon compte</h1>
+
+    @if (TempData["Error"] is string erreur)
+    {
+        <div class="alert alert-danger" role="alert">@erreur</div>
+    }
+
+    <dl class="row mb-0">
+        <dt class="col-sm-3">Nom</dt><dd class="col-sm-9">@ViewData["NomComplet"]</dd>
+        <dt class="col-sm-3">E-mail</dt><dd class="col-sm-9">@ViewData["Email"]</dd>
+        <dt class="col-sm-3">Rôle</dt><dd class="col-sm-9">@ViewData["Role"]</dd>
+    </dl>
+</div>
+
+<div class="card-custom">
+    <h2 class="h5 fw-bold mb-3"><i class="bi bi-shield-lock text-warning me-2" aria-hidden="true"></i>Authentification à deux facteurs</h2>
+
+    @if (actif)
+    {
+        <p><span class="badge bg-success">2FA activée</span></p>
+        <p class="mb-0">Un code à 6 chiffres vous est demandé à chaque connexion.</p>
+    }
+    else
+    {
+        <p><span class="badge bg-warning text-dark">2FA inactive</span></p>
+        <p>Protégez votre compte avec une application comme Google Authenticator ou Microsoft Authenticator.</p>
+        <a class="btn btn-warning fw-bold" asp-action="EnableTwoFactor">
+            <i class="bi bi-qr-code me-1" aria-hidden="true"></i> Activer l'authentificateur
+        </a>
+    }
+</div>

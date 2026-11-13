@@ -1,0 +1,296 @@
+﻿@{
+    var ctrl = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    string Actif(string nom) => ctrl.Equals(nom, StringComparison.OrdinalIgnoreCase) ? "active" : "";
+    bool connecte = User.Identity != null && User.Identity.IsAuthenticated;
+    string role = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value ?? "";
+    bool deuxFA = User.HasClaim("2fa", "true");
+}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Akaranga Bank | Core Banking</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <style>
+        :root {
+            --bg-main: #121824;
+            --bg-card: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-color: #f59e0b;
+            --border-soft: #334155;
+            --zone-hauteur: calc(100vh - 150px);
+        }
+
+        body {
+            background-color: var(--bg-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .lien-evitement {
+            position: absolute;
+            left: -999px;
+            top: 8px;
+            background: var(--accent-color);
+            color: #000000;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-weight: 700;
+            z-index: 2000;
+        }
+        .lien-evitement:focus { left: 8px; }
+
+        .navbar-custom {
+            background-color: #0f172a;
+            border-bottom: 2px solid var(--accent-color);
+            height: 70px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-container {
+            background-color: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--border-soft);
+            padding: 1.5rem;
+            height: var(--zone-hauteur);
+            overflow-y: auto;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+        }
+
+        .sidebar-container::-webkit-scrollbar,
+        .main-content-scroll::-webkit-scrollbar { width: 8px; }
+        .sidebar-container::-webkit-scrollbar-thumb,
+        .main-content-scroll::-webkit-scrollbar-thumb {
+            background-color: var(--border-soft);
+            border-radius: 10px;
+        }
+
+        .nav-sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1.2rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 10px;
+            border-left: 4px solid transparent;
+            transition: all 0.2s;
+            margin-bottom: 0.4rem;
+            font-size: 0.95rem;
+        }
+        .nav-sidebar-link:hover,
+        .nav-sidebar-link.active {
+            background-color: rgba(245, 158, 11, 0.15);
+            color: var(--accent-color);
+            border-left-color: var(--accent-color);
+        }
+        .nav-sidebar-link:focus-visible,
+        .btn:focus-visible {
+            outline: 3px solid var(--accent-color);
+            outline-offset: 2px;
+        }
+
+        .sidebar-header {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--accent-color);
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            padding-left: 0.5rem;
+            letter-spacing: 0.08em;
+        }
+
+        .profile-box {
+            background-color: #0f172a;
+            border-radius: 12px;
+            padding: 1rem;
+            border: 1px solid var(--border-soft);
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .main-content-scroll {
+            height: var(--zone-hauteur);
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .card-custom {
+            border-radius: 16px;
+            border: 1px solid var(--border-soft);
+            background-color: var(--bg-card);
+            color: var(--text-main);
+            padding: 2rem;
+        }
+
+        .font-money, .font-monospace {
+            font-family: 'JetBrains Mono', monospace !important;
+            color: #38bdf8 !important;
+        }
+        .navbar-custom .font-monospace,
+        .profile-box .font-monospace { color: var(--text-main) !important; }
+
+        footer {
+            background-color: #0f172a;
+            color: var(--text-muted);
+            flex-shrink: 0;
+        }
+
+        @@media (max-width: 991.98px) {
+            body { height: auto; overflow: auto; }
+            .sidebar-container,
+            .main-content-scroll { height: auto; overflow: visible; }
+        }
+    </style>
+</head>
+<body>
+    <a class="lien-evitement" href="#contenu-principal">Aller au contenu</a>
+
+    <!-- BARRE DU HAUT -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom py-2" aria-label="Barre principale">
+        <div class="container-fluid px-4 d-flex justify-content-between align-items-center">
+            <a class="navbar-brand fw-bold d-flex align-items-center" asp-controller="Home" asp-action="Index">
+                <i class="bi bi-bank2 text-warning me-2 fs-4" aria-hidden="true"></i>
+                <span>Akaranga Bank <span class="text-warning small fw-normal">| Core Banking</span></span>
+            </a>
+
+            @if (connecte)
+            {
+                <div class="d-flex align-items-center text-white small">
+                    <span class="badge bg-warning text-dark text-uppercase me-2 fw-bold" style="font-size: 0.75rem;">@role</span>
+                    <span class="font-monospace opacity-75">@User.Identity!.Name</span>
+                    @if (deuxFA)
+                    {
+                        <span class="badge bg-success ms-2" title="Authentification à deux facteurs activée">
+                            <i class="bi bi-shield-check" aria-hidden="true"></i> 2FA
+                        </span>
+                    }
+                </div>
+            }
+        </div>
+    </nav>
+
+    <!-- STRUCTURE PRINCIPALE -->
+    <div class="container-fluid px-4 flex-grow-1 mt-2">
+        <div class="row">
+
+            @if (connecte)
+            {
+                <!-- MENU LATÉRAL -->
+                <nav class="col-xl-3 col-lg-4 col-md-5 mb-3" aria-label="Menu principal">
+                    <div class="sidebar-container">
+
+                        <!-- Profil -->
+                        <div class="profile-box mb-3">
+                            <div class="d-flex align-items-center mb-1">
+                                <i class="bi bi-person-circle text-warning fs-4 me-2" aria-hidden="true"></i>
+                                <span class="fw-bold font-monospace text-truncate">@User.Identity!.Name</span>
+                                @if (deuxFA)
+                                {
+                                    <span class="badge bg-success ms-2">2FA</span>
+                                }
+                            </div>
+                            <div class="small text-muted mt-2">Acteur : <span class="badge bg-warning text-dark text-uppercase fw-bold">@role</span></div>
+                        </div>
+
+                        <!-- Déconnexion -->
+                        <form asp-controller="Account" asp-action="Logout" method="post" class="m-0 mb-4">
+                            <button type="submit" class="btn btn-sm btn-outline-danger fw-bold w-100 py-2 rounded-3">
+                                <i class="bi bi-box-arrow-left me-1" aria-hidden="true"></i> Fermer la session active
+                            </button>
+                        </form>
+
+                        <hr class="my-3 border-secondary" />
+
+                        <!-- Registre d'agence -->
+                        <div class="sidebar-header">Registre d'agence</div>
+                        <a class="nav-sidebar-link @Actif("Home")" asp-controller="Home" asp-action="Index">
+                            <i class="bi bi-grid-1x2 me-2" aria-hidden="true"></i> Console d'accueil
+                        </a>
+                        @if (User.IsInRole("admin") || User.IsInRole("gestionnaire") || User.IsInRole("guichetier"))
+                        {
+                            <a class="nav-sidebar-link @Actif("Clients")" asp-controller="Clients" asp-action="Index">
+                                <i class="bi bi-people me-2" aria-hidden="true"></i> Clients
+                            </a>
+                        }
+                        <a class="nav-sidebar-link @Actif("Comptes")" asp-controller="Comptes" asp-action="Index">
+                            <i class="bi bi-wallet2 me-2" aria-hidden="true"></i> Grand livre comptes
+                        </a>
+                        <a class="nav-sidebar-link @Actif("Virements")" asp-controller="Virements" asp-action="Initier">
+                            <i class="bi bi-arrow-left-right me-2" aria-hidden="true"></i> Virements
+                        </a>
+                        <a class="nav-sidebar-link @Actif("Account")" asp-controller="Account" asp-action="Manage">
+                            <i class="bi bi-person-gear me-2" aria-hidden="true"></i> Mon compte
+                        </a>
+
+                        @if (User.IsInRole("admin"))
+                        {
+                            <div class="sidebar-header">Administration</div>
+                            <a class="nav-sidebar-link @Actif("Agences")" asp-controller="Agences" asp-action="Index">
+                                <i class="bi bi-building-gear me-2" aria-hidden="true"></i> Référentiel agences
+                            </a>
+                            <a class="nav-sidebar-link @Actif("Utilisateurs")" asp-controller="Utilisateurs" asp-action="Index">
+                                <i class="bi bi-people-fill me-2" aria-hidden="true"></i> Habilitations agents
+                            </a>
+                        }
+
+                        @if (User.IsInRole("gestionnaire") || User.IsInRole("admin"))
+                        {
+                            <div class="sidebar-header">Engagements</div>
+                            <a class="nav-sidebar-link @Actif("Prets")" asp-controller="Prets" asp-action="Index">
+                                <i class="bi bi-cash-coin me-2" aria-hidden="true"></i> Portefeuille des prêts
+                            </a>
+                            <a class="nav-sidebar-link @Actif("Chequiers")" asp-controller="Chequiers" asp-action="Index">
+                                <i class="bi bi-journal-text me-2" aria-hidden="true"></i> Chéquiers
+                            </a>
+                        }
+
+                        @if (User.IsInRole("auditeur") || User.IsInRole("admin"))
+                        {
+                            <div class="sidebar-header">Conformité BRB</div>
+                            <a class="nav-sidebar-link text-danger @Actif("Conformite")" asp-controller="Conformite" asp-action="TableauBord">
+                                <i class="bi bi-shield-fill-exclamation me-2" aria-hidden="true"></i> Vigilance LAB/CFT
+                            </a>
+                            <a class="nav-sidebar-link text-warning @Actif("Notifications")" asp-controller="Notifications" asp-action="Index">
+                                <i class="bi bi-bell-fill me-2" aria-hidden="true"></i> Alertes système
+                                <span class="badge bg-warning text-dark ms-auto fw-bold">!</span>
+                            </a>
+                            <a class="nav-sidebar-link @Actif("Audit")" asp-controller="Audit" asp-action="Index">
+                                <i class="bi bi-journal-check me-2" aria-hidden="true"></i> Piste d'audit interne
+                            </a>
+                        }
+                    </div>
+                </nav>
+            }
+
+            <!-- CONTENU DES PAGES -->
+            <main id="contenu-principal" class="@(connecte ? "col-xl-9 col-lg-8 col-md-7" : "col-12")">
+                <div class="main-content-scroll">
+                    @RenderBody()
+                </div>
+            </main>
+
+        </div>
+    </div>
+
+    <!-- PIED DE PAGE -->
+    <footer class="text-center small py-2">
+        &copy; @DateTime.Now.Year - Akaranga Bank S.A. (Gitega, Burundi) | Supervision BRB
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

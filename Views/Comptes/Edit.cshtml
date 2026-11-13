@@ -1,0 +1,75 @@
+@using AkarangaBank.Web.ViewModels
+@model CompteEditViewModel
+
+@{
+    ViewData["Title"] = "Modifier le compte";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-warning text-dark">
+                    <h4 class="mb-0"><i class="bi bi-pencil-square"></i> Gestion & Modification du Compte</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Informations fixes en lecture seule -->
+                    <div class="bg-light p-3 rounded mb-4">
+                        <p class="mb-2">Titulaire : <strong>@Model.ClientNom</strong></p>
+                        <p class="mb-2">Numéro de Compte : <span class="badge bg-secondary font-monospace">@Model.NumeroCompte</span></p>
+                        <p class="mb-0">Solde Actuel : <strong>@Model.Solde.ToString("N2") @Model.Devise</strong></p>
+                    </div>
+
+                    <form asp-action="Edit" method="post">
+                        @Html.AntiForgeryToken()
+                        
+                        <!-- Champs masqués pour conserver les données non modifiables -->
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="NumeroCompte" />
+                        <input type="hidden" asp-for="ClientNom" />
+                        <input type="hidden" asp-for="Solde" />
+                        <input type="hidden" asp-for="Devise" />
+
+                        <!-- Modification du type de produit bancaire -->
+                        <div class="mb-3">
+                            <label asp-for="TypeCompteId" class="form-label font-weight-bold">Type de produit bancaire</label>
+                            <select asp-for="TypeCompteId" asp-items="Model.TypesCompteDisponibles" class="form-select"></select>
+                            <span asp-validation-for="TypeCompteId" class="text-danger"></span>
+                        </div>
+
+                        <!-- Modification de l'agence comptable -->
+                        <div class="mb-3">
+                            <label asp-for="AgenceId" class="form-label font-weight-bold">Agence de gestion comptable</label>
+                            <select asp-for="AgenceId" asp-items="Model.AgencesDisponibles" class="form-select"></select>
+                            <span asp-validation-for="AgenceId" class="text-danger"></span>
+                        </div>
+
+                        <!-- Modification du statut opérationnel -->
+                        <div class="mb-3">
+                            <label asp-for="Statut" class="form-label font-weight-bold">Statut opérationnel</label>
+                            <select asp-for="Statut" class="form-select">
+                                <option value="Actif">Actif</option>
+                                <option value="Bloqué">Bloqué</option>
+                                <option value="Suspendu">Suspendu</option>
+                                <option value="Clôturé">Clôturé</option>
+                            </select>
+                            <span asp-validation-for="Statut" class="text-danger"></span>
+                        </div>
+
+                        <!-- Boutons d'action -->
+                        <div class="d-flex justify-content-between mt-4">
+                            <a asp-action="Index" class="btn btn-outline-secondary">Annuler</a>
+                            <button type="submit" class="btn btn-warning">
+                                <i class="bi bi-check-circle"></i> Enregistrer les modifications
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
